@@ -1,72 +1,120 @@
-import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+	SafeAreaView,
+	FlatList,
+	Image,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Image
-        source={require('./assets/emsi.png')}
-        style={styles.logo}
-        
-        resizeMode="contain"
-      />
-      <Text style={styles.schoolName}>EMSI ORANGERS</Text>
+	const [names, setNames] = useState(['Karrach', 'Reda', 'Sofia', 'Youssef']);
+	const counterRef = useRef(1);
 
-      <View style={styles.info}>
-  <Text style={styles.label}>Nom : <Text style={styles.value}>Karrach</Text></Text>
-  <Text style={styles.label}>Prénom : <Text style={styles.value}>Reda</Text></Text>
-  <Text style={styles.label}>Année universitaire : <Text style={styles.value}>2025 / 2026</Text></Text>
-      </View>
+	function addName() {
+		const newName = `Nouvel Élève numero ${counterRef.current}`;
+		counterRef.current += 1;
 
-    </View>
-  );
+		setNames(prev => [newName, ...prev]);
+	}
+
+	const renderItem = ({ item, index }) => (
+		<View style={styles.item}>
+			<Text style={styles.itemIndex}>{index + 1}.</Text>
+			<Text style={styles.itemText}>{item}</Text>
+		</View>
+	);
+
+	return (
+		<SafeAreaView style={styles.container}>
+			<View style={styles.header}>
+				<Image source={require('./assets/emsi.png')} style={styles.logo} />
+				<Text style={styles.title}>Liste des étudiants</Text>
+			</View>
+
+			<FlatList
+				data={names}
+				keyExtractor={(item, idx) => `${item}-${idx}`}
+				renderItem={renderItem}
+				contentContainerStyle={styles.list}
+				style={styles.flat}
+			/>
+
+			<TouchableOpacity style={styles.button} onPress={addName} activeOpacity={0.8}>
+				<Text style={styles.buttonText}>Ajouter un nom</Text>
+			</TouchableOpacity>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f6f7fb',
-    padding: 20,
-  },
-  logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
-  },
-  schoolName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 30,
-    letterSpacing: 1,
-    textAlign: 'center',
-  },
-  info: {
-    alignItems: 'flex-start',
-    gap: 15,
-    backgroundColor: '#ffffff',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-    minWidth: 300,
-  },
-  label: {
-    fontSize: 16,
-    color: '#6b7280',
-    fontWeight: '500',
-  },
-  value: {
-    fontSize: 17,
-    color: '#111827',
-    fontWeight: 'bold',
-  },
+	container: {
+		flex: 1,
+		backgroundColor: '#f6f7fb',
+		padding: 16,
+	},
+	header: {
+		alignItems: 'center',
+		marginBottom: 12,
+	},
+	logo: {
+		width: 80,
+		height: 80,
+		resizeMode: 'contain',
+		marginBottom: 8,
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: '700',
+		color: '#1f2937',
+	},
+	flat: {
+		flex: 1,
+		marginVertical: 12,
+	},
+	list: {
+		paddingBottom: 24,
+	},
+	item: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: '#fff',
+		padding: 12,
+		marginVertical: 6,
+		marginHorizontal: 6,
+		borderRadius: 8,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.06,
+		shadowRadius: 2,
+		elevation: 2,
+	},
+	itemIndex: {
+		width: 28,
+		fontSize: 16,
+		color: '#6b7280',
+		fontWeight: '600',
+	},
+	itemText: {
+		fontSize: 16,
+		color: '#111827',
+		fontWeight: '500',
+	},
+	button: {
+		backgroundColor: '#2563eb',
+		paddingVertical: 14,
+		paddingHorizontal: 20,
+		borderRadius: 10,
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginTop: 8,
+	},
+	buttonText: {
+		color: '#fff',
+		fontSize: 16,
+		fontWeight: '700',
+	},
 });
+
